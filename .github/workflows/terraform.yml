@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
+  TF_PLUGIN_CACHE_DIR:  ~/.terraform.d/plugin-cache
 
 jobs:
   terraform:
