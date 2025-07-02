@@ -21,13 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4.2.2
       - uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 # ratchet:reviewdog/action-setup@v1.3.2
-      - uses: sethvargo/ratchet@8b4ca256dbed184350608a3023620f267f0a5253 # ratchet:sethvargo/ratchet@v0.11.4
-      - run: ratchet lint -format actions .github/workflows/*
+      - run: docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint -format actions .github/workflows/*
       - name: Run reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
         run: |
-          ratchet lint .github/workflows/* | reviewdog -efm="%f:%l:%c: %m" \
+          docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint .github/workflows/* | reviewdog -efm="%f:%l:%c: %m" \
             -name=ratchet \
             -level=warning \
             -fail-level=error \
