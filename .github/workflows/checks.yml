@@ -20,8 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4.2.2
+
+      #- run: docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint -format actions .github/workflows/*
+
       - uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 # ratchet:reviewdog/action-setup@v1.3.2
-      - run: docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint -format actions .github/workflows/*
       - name: Run reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
