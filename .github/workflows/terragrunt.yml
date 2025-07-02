@@ -52,7 +52,7 @@ jobs:
         if: env.SSH_DEPLOY_KEYS != ''
         env:
           SSH_DEPLOY_KEYS: ${{ secrets.SSH_DEPLOY_KEYS }}
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
