@@ -43,28 +43,28 @@ jobs:
       id-token: write
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v4.2.0
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
 
       - name: Login to Amazon ECR
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v2.0.0
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@v3.0.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.0.0
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.0
 
       - name: Extract image metadata
         id: metadata
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v5.0.0
         with:
           images: ${{ steps.ecr-login.outputs.registry }}/${{ inputs.repository }}
           tags: |
@@ -74,7 +74,7 @@ jobs:
 
       - name: Build and push container image
         id: build-push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.0.0
         with:
           build-args: ${{ inputs.build-args }}
           context: ${{ inputs.context }}

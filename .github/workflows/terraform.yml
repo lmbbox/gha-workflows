@@ -40,24 +40,24 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v4.2.0
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v2.0.0
 
       - name: Checkout the repository to the runner
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.0
 
       - name: Setup Terraform with specified version on the runner
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v3.1.0
 
       - name: Restore Terraform Plugin Cache
         id: restore-terraform-plugin-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v4.1.0
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: v1-terraform-plugin-cache-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.working-directory)) }}
@@ -69,7 +69,7 @@ jobs:
         run: terraform init
 
       - name: Save Terraform Plugin Cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v4.1.0
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ steps.restore-terraform-plugin-cache.outputs.cache-primary-key }}
@@ -97,7 +97,7 @@ jobs:
         run: terraform show tfplan
 
       - name: Create PR Comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v7.0.0
         continue-on-error: true
         if: github.event_name == 'pull_request'
         env:
