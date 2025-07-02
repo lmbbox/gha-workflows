@@ -45,193 +45,193 @@ jobs:
         shell: gha-bash-wrapper {0}
         working-directory: ${{ inputs.working-directory }}
     steps:
-    - name: Setup Github Actions Bash Wrapper
-      uses: lmbbox/gha-bash-wrapper@main
+      - name: Setup Github Actions Bash Wrapper
+        uses: lmbbox/gha-bash-wrapper@main
 
-    - name: Setup SSH Agent
-      if: env.SSH_DEPLOY_KEYS != ''
-      env:
-        SSH_DEPLOY_KEYS: ${{ secrets.SSH_DEPLOY_KEYS }}
-      uses: webfactory/ssh-agent@v0.9.1
-      with:
-        ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
+      - name: Setup SSH Agent
+        if: env.SSH_DEPLOY_KEYS != ''
+        env:
+          SSH_DEPLOY_KEYS: ${{ secrets.SSH_DEPLOY_KEYS }}
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-region: ${{ inputs.aws-region }}
-        role-to-assume: ${{ inputs.aws-role-to-assume }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-role-to-assume }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Mise Tools
-      uses: jdx/mise-action@v2
+      - name: Setup Mise Tools
+        uses: jdx/mise-action@v2
 
-    - name: Terragrunt HCL Format
-      id: hclfmt
-      continue-on-error: true
-      run: terragrunt hcl format --check --diff
+      - name: Terragrunt HCL Format
+        id: hclfmt
+        continue-on-error: true
+        run: terragrunt hcl format --check --diff
 
-    - name: Terragrunt HCL Format TF & TFVars
-      id: hclfmttfvars
-      continue-on-error: true
-      run: |
-        failed=0
-        for file in $(find . \( -name '*.tf' -o -name '*.tfvars' \) -not -path '*/.terragrunt-cache/*')
-        do
-          if ! terragrunt hcl format --check --diff --log-custom-format "%msg" --file $file
-          then
-            failed=1
-          fi
-        done
-        exit $failed
+      - name: Terragrunt HCL Format TF & TFVars
+        id: hclfmttfvars
+        continue-on-error: true
+        run: |
+          failed=0
+          for file in $(find . \( -name '*.tf' -o -name '*.tfvars' \) -not -path '*/.terragrunt-cache/*')
+          do
+            if ! terragrunt hcl format --check --diff --log-custom-format "%msg" --file $file
+            then
+              failed=1
+            fi
+          done
+          exit $failed
 
-    - name: Terragrunt HCL Validate
-      id: hclval
-      continue-on-error: true
-      run: terragrunt hcl validate
+      - name: Terragrunt HCL Validate
+        id: hclval
+        continue-on-error: true
+        run: terragrunt hcl validate
 
-    - name: Create PR Comment
-      uses: actions/github-script@v7
-      continue-on-error: true
-      if: ${{ github.event_name == 'pull_request' && (steps.hclfmt.outcome == 'failure' || steps.hclfmttfvars.outcome == 'failure' || steps.hclval.outcome == 'failure') }}
-      env:
-        HCLFMT: "${{ steps.hclfmt.outputs.stdouterr }}"
-        HCLFMTTFVARS: "${{ steps.hclfmttfvars.outputs.stdouterr }}"
-        HCLVAL: "${{ steps.hclval.outputs.stdouterr }}"
-      with:
-        script: |
-          const util = require('util')
-          const output = `### Terragrunt
-          <details>
-          <summary>Format HCL 📝 ${{ steps.hclfmt.outcome == 'success' && '✅' || '❌' }}</summary>
+      - name: Create PR Comment
+        uses: actions/github-script@v7
+        continue-on-error: true
+        if: ${{ github.event_name == 'pull_request' && (steps.hclfmt.outcome == 'failure' || steps.hclfmttfvars.outcome == 'failure' || steps.hclval.outcome == 'failure') }}
+        env:
+          HCLFMT: "${{ steps.hclfmt.outputs.stdouterr }}"
+          HCLFMTTFVARS: "${{ steps.hclfmttfvars.outputs.stdouterr }}"
+          HCLVAL: "${{ steps.hclval.outputs.stdouterr }}"
+        with:
+          script: |
+            const util = require('util')
+            const output = `### Terragrunt
+            <details>
+            <summary>Format HCL 📝 ${{ steps.hclfmt.outcome == 'success' && '✅' || '❌' }}</summary>
 
-          <pre>
-          ${util.stripVTControlCharacters(process.env.HCLFMT).trim()}
-          </pre>
+            <pre>
+            ${util.stripVTControlCharacters(process.env.HCLFMT).trim()}
+            </pre>
 
-          </details>
+            </details>
 
-          <details>
-          <summary>Format TF & TFVars 📝 ${{ steps.hclfmttfvars.outcome == 'success' && '✅' || '❌' }}</summary>
+            <details>
+            <summary>Format TF & TFVars 📝 ${{ steps.hclfmttfvars.outcome == 'success' && '✅' || '❌' }}</summary>
 
-          <pre>
-          ${util.stripVTControlCharacters(process.env.HCLFMTTFVARS).trim()}
-          </pre>
+            <pre>
+            ${util.stripVTControlCharacters(process.env.HCLFMTTFVARS).trim()}
+            </pre>
 
-          </details>
+            </details>
 
-          <details>
-          <summary>Validate HCL 🤖 ${{ steps.hclval.outcome == 'success' && '✅' || '❌' }} </summary>
+            <details>
+            <summary>Validate HCL 🤖 ${{ steps.hclval.outcome == 'success' && '✅' || '❌' }} </summary>
 
-          <pre>
-          ${util.stripVTControlCharacters(process.env.HCLVAL).trim()}
-          </pre>
+            <pre>
+            ${util.stripVTControlCharacters(process.env.HCLVAL).trim()}
+            </pre>
 
-          </details>
+            </details>
 
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
-          `;
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
+            `;
 
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
 
-    - name: Check Status
-      if: ${{ steps.hclfmt.outcome == 'failure' || steps.hclfmttfvars.outcome == 'failure' || steps.hclval.outcome == 'failure' }}
-      run: exit 1
+      - name: Check Status
+        if: ${{ steps.hclfmt.outcome == 'failure' || steps.hclfmttfvars.outcome == 'failure' || steps.hclval.outcome == 'failure' }}
+        run: exit 1
 
-    - name: Restore Terragrunt Provider Cache
-      id: restore-terragrunt-provider-cache
-      uses: actions/cache/restore@v4
-      with:
-        path: ~/.cache/terragrunt
-        key: v1-terragrunt-provider-cache-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
-        restore-keys: |
-          v1-terragrunt-provider-cache-${{ runner.os }}-
+      - name: Restore Terragrunt Provider Cache
+        id: restore-terragrunt-provider-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/terragrunt
+          key: v1-terragrunt-provider-cache-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            v1-terragrunt-provider-cache-${{ runner.os }}-
 
-    - name: Terragrunt TF Init
-      id: init
-      run: terragrunt run --all -- init
+      - name: Terragrunt TF Init
+        id: init
+        run: terragrunt run --all -- init
 
-    - name: Save Terragrunt Provider Cache
-      uses: actions/cache/save@v4
-      with:
-        path: ~/.cache/terragrunt
-        key: ${{ steps.restore-terragrunt-provider-cache.outputs.cache-primary-key }}
+      - name: Save Terragrunt Provider Cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/terragrunt
+          key: ${{ steps.restore-terragrunt-provider-cache.outputs.cache-primary-key }}
 
-    - name: Terragrunt TF Validate
-      id: validate
-      continue-on-error: true
-      run: terragrunt run --all -- validate
+      - name: Terragrunt TF Validate
+        id: validate
+        continue-on-error: true
+        run: terragrunt run --all -- validate
 
-    - name: Terragrunt TF Plan
-      id: plan
-      continue-on-error: true
-      if: github.event_name == 'pull_request'
-      run: terragrunt run --all -- plan -lock-timeout=15m -out=tfplan
+      - name: Terragrunt TF Plan
+        id: plan
+        continue-on-error: true
+        if: github.event_name == 'pull_request'
+        run: terragrunt run --all -- plan -lock-timeout=15m -out=tfplan
 
-    - name: Terragrunt TF Show
-      id: show
-      if: github.event_name == 'pull_request'
-      run: terragrunt run --all --tf-forward-stdout -- show tfplan
+      - name: Terragrunt TF Show
+        id: show
+        if: github.event_name == 'pull_request'
+        run: terragrunt run --all --tf-forward-stdout -- show tfplan
 
-    - name: Create PR Comment
-      uses: actions/github-script@v7
-      continue-on-error: true
-      if: github.event_name == 'pull_request'
-      env:
-        VALIDATE: "${{ steps.validate.outputs.stdouterr }}"
-        PLAN: "${{ steps.show.outputs.stdouterr }}"
-      with:
-        script: |
-          const util = require('util')
-          const output = `### Terragrunt ${{ inputs.working-directory }}
-          #### Initialization ⚙️ ${{ steps.init.outcome == 'success' && '✅' || '❌' }}
-          #### Validation 🤖 ${{ steps.validate.outcome == 'success' && '✅' || '❌' }}
+      - name: Create PR Comment
+        uses: actions/github-script@v7
+        continue-on-error: true
+        if: github.event_name == 'pull_request'
+        env:
+          VALIDATE: "${{ steps.validate.outputs.stdouterr }}"
+          PLAN: "${{ steps.show.outputs.stdouterr }}"
+        with:
+          script: |
+            const util = require('util')
+            const output = `### Terragrunt ${{ inputs.working-directory }}
+            #### Initialization ⚙️ ${{ steps.init.outcome == 'success' && '✅' || '❌' }}
+            #### Validation 🤖 ${{ steps.validate.outcome == 'success' && '✅' || '❌' }}
 
-          <details>
-          <summary>Show</summary>
+            <details>
+            <summary>Show</summary>
 
-          <pre>
-          ${util.stripVTControlCharacters(process.env.VALIDATE).trim()}
-          </pre>
+            <pre>
+            ${util.stripVTControlCharacters(process.env.VALIDATE).trim()}
+            </pre>
 
-          </details>
+            </details>
 
-          #### Plan 📖 ${{ steps.plan.outcome == 'success' && '✅' || '❌' }}
+            #### Plan 📖 ${{ steps.plan.outcome == 'success' && '✅' || '❌' }}
 
-          <details>
-          <summary>Show</summary>
+            <details>
+            <summary>Show</summary>
 
-          <pre>
-          ${util.stripVTControlCharacters(process.env.PLAN).trim()}
-          </pre>
+            <pre>
+            ${util.stripVTControlCharacters(process.env.PLAN).trim()}
+            </pre>
 
-          </details>
+            </details>
 
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
-          `;
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
+            `;
 
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
 
-    - name: Terragrunt TF Plan Status
-      if: ${{ (steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure') }}
-      run: exit 1
+      - name: Terragrunt TF Plan Status
+        if: ${{ (steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure') }}
+        run: exit 1
 
-    - name: Terragrunt TF Apply
-      if: github.ref == 'refs/heads/main'
-      run: terragrunt run --all -- apply -auto-approve -lock-timeout=15m
+      - name: Terragrunt TF Apply
+        if: github.ref == 'refs/heads/main'
+        run: terragrunt run --all -- apply -auto-approve -lock-timeout=15m
