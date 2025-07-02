@@ -14,11 +14,11 @@ jobs:
       - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
       - uses: reviewdog/action-actionlint@db58217885f9a6570da9c71be4e40ec33fe44a1f # v1.65.0
         with:
-          reporter: github-annotations
+          reporter: github-pr-annotations
   yamllint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
       - uses: reviewdog/action-yamllint@1dca3ad811867be18fbe293a9818d715a6c2cd46 # rv1.20.0
         with:
-          reporter: github-annotations
+          reporter: github-pr-annotations
