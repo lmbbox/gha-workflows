@@ -26,7 +26,7 @@ jobs:
       - name: Run reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
-        run: reviewdog -reporter=github-check -runners=ratchet
+        run: reviewdog -reporter=github-check
   yamllint:
     runs-on: ubuntu-latest
     steps:
