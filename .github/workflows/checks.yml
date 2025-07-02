@@ -12,33 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4.2.2
-      - uses: reviewdog/action-actionlint@a5524e1c19e62881d79c1f1b9b6f09f16356e281 # ratchet:reviewdog/action-actionlint@v1.65.2
-        with:
-          level: warning
-          reporter: github-check
+      - uses: jdx/mise-action@5cb1df66ed5e1fb3c670ea0b62fd17a76979826a # ratchet:jdx/mise-action@v2.3.1
+      - run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
+          actionlint
   ratchet:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4.2.2
-
-      #- run: docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint -format actions .github/workflows/*
-
-      - uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 # ratchet:reviewdog/action-setup@v1.3.2
-      - name:  Run reviewdog
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
-        run: |
-          docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint .github/workflows/* | reviewdog -efm="%f:%l:%c: %m" \
-            -name=ratchet \
-            -level=warning \
-            -fail-level=error \
-            -filter-mode=file \
-            -reporter=github-check
+      - run: docker run --rm -v "${PWD}:${PWD}" -w "${PWD}" ghcr.io/sethvargo/ratchet:latest lint -format actions .github/workflows/**.{yml,yaml}
   yamllint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4.2.2
-      - uses: reviewdog/action-yamllint@f01d8a48fd8d89f89895499fca2cff09f9e9e8c0 # ratchet:reviewdog/action-yamllint@v1.21.0
-        with:
-          level: warning
-          reporter: github-check
+      - uses: jdx/mise-action@5cb1df66ed5e1fb3c670ea0b62fd17a76979826a # ratchet:jdx/mise-action@v2.3.1
+      - run: yamllint --format github .
