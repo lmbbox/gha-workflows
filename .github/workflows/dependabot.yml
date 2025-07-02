@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   auto-approve-merge:
+    boo: ${{ env.goo }}
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'lmbbox/gha-workflows'
     runs-on: ubuntu-latest
     env:
