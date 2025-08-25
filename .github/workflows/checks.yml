@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5.0.0
-      - uses: jdx/mise-action@ca0c5fc9c8a8386dae8ba5d37608a083a307991c # ratchet:jdx/mise-action@v3.1.0
+      - uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566 # ratchet:jdx/mise-action@v3.2.0
       - run: |
           echo "::add-matcher::.github/problem-matchers/actionlint.json"
           actionlint
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5.0.0
-      - uses: jdx/mise-action@ca0c5fc9c8a8386dae8ba5d37608a083a307991c # ratchet:jdx/mise-action@v3.1.0
+      - uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566 # ratchet:jdx/mise-action@v3.2.0
       - run: |
           echo "::add-matcher::.github/problem-matchers/yamllint.json"
           yamllint --format parsable .
