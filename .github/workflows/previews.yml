@@ -29,6 +29,7 @@ on:
         type: string
 
 permissions:
+  id-token: write
   pull-requests: write
 
 jobs:
