@@ -14,6 +14,11 @@ on:
         default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_ASSUME || vars.AWS_ROLE_TO_ASSUME }}
         required: false
         type: string
+      aws-role-to-chain:
+        description: The second AWS role to assume.
+        default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_CHAIN || vars.AWS_ROLE_TO_CHAIN }}
+        required: false
+        type: string
       working-directory:
         description: The directory in which to run terragrunt from.
         default: ./
@@ -61,6 +66,14 @@ jobs:
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
+
+      - name: Configure Chained AWS Credentials
+        if: inputs.aws-role-to-chain != ''
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # ratchet:aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-role-to-chain }}
+          role-chaining: true
 
       - name: Login to Amazon ECR
         id: login-ecr
