@@ -63,6 +63,7 @@ jobs:
           role-to-assume: ${{ inputs.aws-role-to-chain }}
           role-external-id: ${{ inputs.aws-role-to-chain-external-id }}
           role-chaining: true
+          role-skip-session-tagging: true
 
       - name: Login to Amazon ECR
         id: login-ecr
