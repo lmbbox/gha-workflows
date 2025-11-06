@@ -170,6 +170,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        # github.event.repository.default_branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref_name == github.event.repository.default_branch
         run: terraform apply -auto-approve -input=false -lock-timeout=15m
