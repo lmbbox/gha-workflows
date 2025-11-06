@@ -19,6 +19,11 @@ on:
         default: ${{ vars.OPENTOFU_AWS_ROLE_TO_CHAIN || vars.AWS_ROLE_TO_CHAIN }}
         required: false
         type: string
+      aws-role-to-chain-external-id:
+        description: The external ID of the second AWS role to assume.
+        default: ""
+        required: false
+        type: string
       working-directory:
         description: "The directory in which to run tofu from."
         required: true
@@ -56,6 +61,7 @@ jobs:
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-chain }}
+          role-external-id: ${{ inputs.aws-role-to-chain-external-id }}
           role-chaining: true
 
       - name: Login to Amazon ECR
