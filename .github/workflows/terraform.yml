@@ -24,8 +24,12 @@ on:
         default: ""
         required: false
         type: string
+      tfvars:
+        description: The content to append to the terraform.tfvars file.
+        required: false
+        type: string
       working-directory:
-        description: "The directory in which to run terraform from."
+        description: The directory in which to run terraform from.
         required: true
         type: string
 
@@ -71,6 +75,14 @@ jobs:
 
       - name: Checkout the repository to the runner
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5.0.0
+
+      - name: Set additional tfvars
+        if: inputs.tfvars != ''
+        run: |
+          cat << 'EOF' >> terraform.tfvars
+          # Added by GHA
+          ${{ inputs.tfvars }}
+          EOF
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # ratchet:hashicorp/setup-terraform@v3.1.2
