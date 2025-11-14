@@ -125,19 +125,19 @@ jobs:
 
       - name: Opentofu Plan
         id: plan
-        continue-on-error: true
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         run: tofu plan -detailed-exitcode -input=false -lock-timeout=15m -out=tfplan
 
       - name: Opentofu Show
         id: show
-        continue-on-error: true
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         run: tofu show -plan=tfplan
 
       - name: Generate PR Comment File
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # ratchet:actions/github-script@v8.0.0
         if: github.event_name == 'pull_request'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # ratchet:actions/github-script@v8.0.0
         env:
           FMT: "${{ steps.fmt.outputs.stdout }}\n${{ steps.fmt.outputs.stderr }}"
           VALIDATE: "${{ steps.validate.outputs.stdout }}\n${{ steps.validate.outputs.stderr }}"
@@ -194,14 +194,22 @@ jobs:
             fs.writeFileSync(filePath, fileContent);
 
       - name: Post PR Comment
-        uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # ratchet:marocchino/sticky-pull-request-comment@v2.9.4
+        id: post-pr-comment
         if: github.event_name == 'pull_request' && inputs.pr-comment-always || (steps.init.outcome != 'success' || steps.fmt.outcome != 'success' || steps.validate.outcome != 'success' || steps.plan.outputs.exitcode != 0)
+        uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # ratchet:marocchino/sticky-pull-request-comment@v2.9.4
         with:
           header: opentofu-${{ inputs.working-directory }}
           path: ${{ runner.temp }}/pr-comment.md
 
+      - name: Delete Stale PR Comment
+        if: github.event_name == 'pull_request' && steps.post-pr-comment.outcome == 'skipped'
+        uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # ratchet:marocchino/sticky-pull-request-comment@v2.9.4
+        with:
+          header: opentofu-${{ inputs.working-directory }}
+          delete: true
+
       - name: Opentofu Status
-        if: ${{ (steps.fmt.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure') }}
+        if: steps.fmt.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure'
         run: exit 1
 
       - name: Opentofu Apply
