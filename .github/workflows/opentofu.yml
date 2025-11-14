@@ -130,9 +130,8 @@ jobs:
         if: github.event_name == 'pull_request'
         run: tofu show tfplan
 
-      - name: Create PR Comment
+      - name: Generate PR Comment File
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # ratchet:actions/github-script@v8.0.0
-        continue-on-error: true
         if: github.event_name == 'pull_request'
         env:
           FMT: "${{ steps.fmt.outputs.stdout }}\n${{ steps.fmt.outputs.stderr }}"
@@ -140,8 +139,10 @@ jobs:
           PLAN: "${{ steps.show.outputs.stdout }}\n${{ steps.show.outputs.stderr }}"
         with:
           script: |
+            const fs = require('fs');
+            const filePath = '${{ runner.temp }}/pr-comment.md';
             const util = require('util')
-            const output = `### Opentofu ${{ inputs.working-directory }}
+            const fileContent = `### Opentofu ${{ inputs.working-directory }}
             #### Initialization ⚙️\`${{ steps.init.outcome == 'success' && '✅' || '❌' }}\`
             #### Format and Style 📝\`${{ steps.fmt.outcome == 'success' && '✅' || '❌' }}\`
 
@@ -178,13 +179,14 @@ jobs:
 
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
             `;
+            fs.writeFileSync(filePath, fileContent);
 
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
+      - name: Post PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          header: opentofu-${{ inputs.working-directory }}
+          path: ${{ runner.temp }}/pr-comment.md
 
       - name: Opentofu Status
         if: ${{ (steps.fmt.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure') }}
