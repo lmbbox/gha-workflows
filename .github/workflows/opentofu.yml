@@ -149,8 +149,8 @@ jobs:
             const filePath = '${{ runner.temp }}/pr-comment.md';
 
             let planDetails = util.stripVTControlCharacters(process.env.PLAN).trim()
-            if (planDetails.length > 100) {
-              planDetails = planDetails.substring(0, 100) + "...\n\nTruncated! See job for complete details."
+            if (planDetails.length > 50) {
+              planDetails = planDetails.substring(0, 50) + "...\n\nTruncated! See job for complete details."
             }
 
             const fileContent = `### Opentofu ${{ inputs.working-directory }}
