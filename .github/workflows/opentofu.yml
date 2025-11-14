@@ -145,8 +145,14 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const filePath = '${{ runner.temp }}/pr-comment.md';
             const util = require('util')
+            const filePath = '${{ runner.temp }}/pr-comment.md';
+
+            let planDetails = util.stripVTControlCharacters(process.env.PLAN).trim()
+            if (planDetails.length > 100) {
+              planDetails = planDetails.substring(0, 100) + "...\n\nTruncated! See job for complete details."
+            }
+
             const fileContent = `### Opentofu ${{ inputs.working-directory }}
             #### Initialization ⚙️\`${{ steps.init.outcome == 'success' && '✅' || '❌' }}\`
             #### Format and Style 📝\`${{ steps.fmt.outcome == 'success' && '✅' || '❌' }}\`
@@ -184,6 +190,7 @@ jobs:
 
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
             `;
+
             fs.writeFileSync(filePath, fileContent);
 
       - name: Post PR Comment
