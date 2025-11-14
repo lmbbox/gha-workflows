@@ -172,7 +172,7 @@ jobs:
             <summary>Show</summary>
 
             <pre>
-            ${util.stripVTControlCharacters(process.env.VALIDATE).trim()}
+            ${planDetails}
             </pre>
 
             </details>
