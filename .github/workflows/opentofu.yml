@@ -79,7 +79,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # ratchet:aws-actions/amazon-ecr-login@v2.0.1
 
       - name: Checkout the repository to the runner
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # ratchet:actions/checkout@v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # ratchet:actions/checkout@v6.0.1
 
       - name: Setup Opentofu
         uses: opentofu/setup-opentofu@000eeb8522f0572907c393e8151076c205fdba1b # ratchet:opentofu/setup-opentofu@v1.0.6
