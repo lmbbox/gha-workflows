@@ -205,21 +205,21 @@ jobs:
       - name: Terragrunt TF Show
         id: show
         if: github.event_name == 'pull_request'
-        run: terragrunt run --all --tf-forward-stdout -- show tfplan
+        run: terragrunt run --all --tf-forward-stdout -- show tfplan 2>&1 | tee "${{ runner.temp }}/tfplan.log"
 
       - name: Generate PR Comment File
         if: github.event_name == 'pull_request'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # ratchet:actions/github-script@v8.0.0
         env:
           VALIDATE: "${{ steps.validate.outputs.stdouterr }}"
-          PLAN: "${{ steps.show.outputs.stdouterr }}"
         with:
           script: |
             const fs = require('fs');
             const util = require('util')
             const filePath = '${{ runner.temp }}/pr-comment.md';
+            const planLog = fs.readFileSync('${{ runner.temp }}/tfplan.log', 'utf8');
 
-            let planDetails = util.stripVTControlCharacters(process.env.PLAN).trim()
+            let planDetails = util.stripVTControlCharacters(planLog).trim();
             if (planDetails.length > 64000) {
               planDetails = planDetails.substring(0, 64000) + "...\n\nTruncated! See job for complete details."
             }
