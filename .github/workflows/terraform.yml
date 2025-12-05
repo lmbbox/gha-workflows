@@ -133,7 +133,7 @@ jobs:
         id: show
         if: github.event_name == 'pull_request'
         continue-on-error: true
-        run: terraform show -plan=tfplan
+        run: terraform show -plan=tfplan 2>&1 | tee "${{ runner.temp }}/tfplan.log"
 
       - name: Generate PR Comment File
         if: github.event_name == 'pull_request'
@@ -141,14 +141,14 @@ jobs:
         env:
           FMT: "${{ steps.fmt.outputs.stdout }}\n${{ steps.fmt.outputs.stderr }}"
           VALIDATE: "${{ steps.validate.outputs.stdout }}\n${{ steps.validate.outputs.stderr }}"
-          PLAN: "${{ steps.show.outputs.stdout }}\n${{ steps.show.outputs.stderr }}"
         with:
           script: |
             const fs = require('fs');
             const util = require('util')
             const filePath = '${{ runner.temp }}/pr-comment.md';
+            const planLog = fs.readFileSync('${{ runner.temp }}/tfplan.log', 'utf8');
 
-            let planDetails = util.stripVTControlCharacters(process.env.PLAN).trim()
+            let planDetails = util.stripVTControlCharacters(planLog).trim();
             if (planDetails.length > 64000) {
               planDetails = planDetails.substring(0, 64000) + "...\n\nTruncated! See job for complete details."
             }
