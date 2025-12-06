@@ -212,6 +212,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # ratchet:actions/github-script@v8.0.0
         env:
           VALIDATE: "${{ steps.validate.outputs.stdouterr }}"
+          PLAN_ERR: "${{ steps.plan.outputs.stderr }}"
         with:
           script: |
             const fs = require('fs');
@@ -220,8 +221,8 @@ jobs:
             const planLog = fs.readFileSync('${{ runner.temp }}/tfplan.log', 'utf8');
 
             let planDetails = util.stripVTControlCharacters(planLog).trim();
-            if (planDetails.length > 64000) {
-              planDetails = planDetails.substring(0, 64000) + "...\n\nTruncated! See job for complete details."
+            if (planDetails.length > 63000) {
+              planDetails = planDetails.substring(0, 63000) + "...\n\nTruncated! See job for complete details."
             }
 
             const fileContent = `### Terragrunt ${{ inputs.working-directory }}
@@ -243,6 +244,7 @@ jobs:
             <summary>Show</summary>
 
             <pre>
+            ${util.stripVTControlCharacters(process.env.PLAN_ERR).trim()}
             ${planDetails}
             </pre>
 
