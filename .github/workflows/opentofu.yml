@@ -96,7 +96,7 @@ jobs:
 
       - name: Restore Opentofu Plugin Cache
         id: restore-opentofu-plugin-cache
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache/restore@v4.3.0
+        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # ratchet:actions/cache/restore@v5.0.0
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: v1-opentofu-plugin-cache-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.working-directory)) }}
@@ -108,7 +108,7 @@ jobs:
         run: tofu init
 
       - name: Save Opentofu Plugin Cache
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache/save@v4.3.0
+        uses: actions/cache/save@a7833574556fa59680c1b7cb190c1735db73ebf0 # ratchet:actions/cache/save@v5.0.0
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ steps.restore-opentofu-plugin-cache.outputs.cache-primary-key }}
