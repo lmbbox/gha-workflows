@@ -96,7 +96,7 @@ jobs:
 
       - name: Restore Terraform Plugin Cache
         id: restore-terraform-plugin-cache
-        uses: actions/cache/restore@a7833574556fa59680c1b7cb190c1735db73ebf0 # ratchet:actions/cache/restore@v5.0.0
+        uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb # ratchet:actions/cache/restore@v5.0.1
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: v1-terraform-plugin-cache-${{ hashFiles(format('{0}/.terraform.lock.hcl', inputs.working-directory)) }}
@@ -108,7 +108,7 @@ jobs:
         run: terraform init
 
       - name: Save Terraform Plugin Cache
-        uses: actions/cache/save@a7833574556fa59680c1b7cb190c1735db73ebf0 # ratchet:actions/cache/save@v5.0.0
+        uses: actions/cache/save@9255dc7a253b0ccc959486e2bca901246202afeb # ratchet:actions/cache/save@v5.0.1
         with:
           path: ${{ env.TF_PLUGIN_CACHE_DIR }}
           key: ${{ steps.restore-terraform-plugin-cache.outputs.cache-primary-key }}
