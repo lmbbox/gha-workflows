@@ -163,7 +163,7 @@ jobs:
 
       - name: Post PR Comment
         if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@447031a6bb83f7438d890bb0136932be78342022 # ratchet:marocchino/sticky-pull-request-comment@v3.0.0
+        uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987 # ratchet:marocchino/sticky-pull-request-comment@v3.0.2
         with:
           header: hcl-${{ inputs.working-directory }}
           path: ${{ runner.temp }}/pr-comment.md
@@ -257,7 +257,7 @@ jobs:
 
       - name: Post PR Comment
         if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@447031a6bb83f7438d890bb0136932be78342022 # ratchet:marocchino/sticky-pull-request-comment@v3.0.0
+        uses: marocchino/sticky-pull-request-comment@70d2764d1a7d5d9560b100cbea0077fc8f633987 # ratchet:marocchino/sticky-pull-request-comment@v3.0.2
         with:
           header: terragrunt-${{ inputs.working-directory }}
           path: ${{ runner.temp }}/pr-comment.md
