@@ -47,7 +47,7 @@ jobs:
         run: aws s3 sync ${{ inputs.directory }} s3://${{ inputs.bucket }}/${{ github.event.repository.name }}-pr-${{ github.event.number }} --delete
 
       - name: Comment PR with preview URL
-        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff # ratchet:marocchino/sticky-pull-request-comment@v3.0.3
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # ratchet:marocchino/sticky-pull-request-comment@v3.0.4
         with:
           message: |
             🚀 Preview for PR #${{ github.event.number }} is ready:
@@ -67,7 +67,7 @@ jobs:
         run: aws s3 rm s3://${{ inputs.bucket }}/${{ github.event.repository.name }}-pr-${{ github.event.number }} --recursive
 
       - name: Comment PR cleanup
-        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff # ratchet:marocchino/sticky-pull-request-comment@v3.0.3
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # ratchet:marocchino/sticky-pull-request-comment@v3.0.4
         with:
           message: |
             🧹 Preview for PR #${{ github.event.number }} has been removed.

@@ -198,14 +198,14 @@ jobs:
       - name: Post PR Comment
         id: post-pr-comment
         if: github.event_name == 'pull_request' && inputs.pr-comment-always || (steps.init.outcome != 'success' || steps.fmt.outcome != 'success' || steps.validate.outcome != 'success' || steps.plan.outputs.exitcode != 0)
-        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff # ratchet:marocchino/sticky-pull-request-comment@v3.0.3
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # ratchet:marocchino/sticky-pull-request-comment@v3.0.4
         with:
           header: terraform-${{ inputs.working-directory }}
           path: ${{ runner.temp }}/pr-comment.md
 
       - name: Delete Stale PR Comment
         if: github.event_name == 'pull_request' && steps.post-pr-comment.outcome == 'skipped'
-        uses: marocchino/sticky-pull-request-comment@d4d6b0936434b21bc8345ad45a440c5f7d2c40ff # ratchet:marocchino/sticky-pull-request-comment@v3.0.3
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # ratchet:marocchino/sticky-pull-request-comment@v3.0.4
         with:
           header: opentofu-${{ inputs.working-directory }}
           delete: true
