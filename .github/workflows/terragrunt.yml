@@ -67,14 +67,14 @@ jobs:
           ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@99214aa6889fcddfa57764031d71add364327e59 # ratchet:aws-actions/configure-aws-credentials@v6.1.3
+        uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # ratchet:aws-actions/configure-aws-credentials@v6.2.0
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
 
       - name: Configure Chained AWS Credentials
         if: inputs.aws-role-to-chain != ''
-        uses: aws-actions/configure-aws-credentials@99214aa6889fcddfa57764031d71add364327e59 # ratchet:aws-actions/configure-aws-credentials@v6.1.3
+        uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # ratchet:aws-actions/configure-aws-credentials@v6.2.0
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-chain }}
