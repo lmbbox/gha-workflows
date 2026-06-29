@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # ratchet:aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # ratchet:aws-actions/configure-aws-credentials@v6.2.1
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # ratchet:aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # ratchet:aws-actions/configure-aws-credentials@v6.2.1
         with:
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
