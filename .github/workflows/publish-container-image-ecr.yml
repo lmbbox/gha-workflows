@@ -50,7 +50,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: ecr-login
-        uses: aws-actions/amazon-ecr-login@fa648b43de3d4d023bcb3f89ed6940096949c419 # ratchet:aws-actions/amazon-ecr-login@v2.1.5
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
