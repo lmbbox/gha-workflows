@@ -4,6 +4,12 @@ name: Terragrunt
 on:
   workflow_call:
     inputs:
+      # Default profile and credentials to load
+      aws-profile:
+        description: Name of the AWS profile to configure.
+        default: ${{ vars.TERRAGRUNT_AWS_PROFILE || vars.AWS_PROFILE }}
+        required: false
+        type: string
       aws-region:
         description: The AWS region to use.
         default: ${{ vars.TERRAGRUNT_AWS_REGION || vars.AWS_REGION }}
@@ -24,6 +30,61 @@ on:
         default: ""
         required: false
         type: string
+
+      # Second profile to create
+      aws-profile2:
+        description: Name of the AWS profile to configure.
+        default: ${{ vars.TERRAGRUNT_AWS_PROFILE2 || vars.AWS_PROFILE2 }}
+        required: false
+        type: string
+      aws-region2:
+        description: The AWS region to use.
+        default: ${{ vars.TERRAGRUNT_AWS_REGION2 || vars.AWS_REGION2 }}
+        required: false
+        type: string
+      aws-role-to-assume2:
+        description: The AWS role to assume.
+        default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_ASSUME2 || vars.AWS_ROLE_TO_ASSUME2 }}
+        required: false
+        type: string
+      aws-role-to-chain2:
+        description: The second AWS role to assume.
+        default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_CHAIN2 || vars.AWS_ROLE_TO_CHAIN2 }}
+        required: false
+        type: string
+      aws-role-to-chain-external-id2:
+        description: The external ID of the second AWS role to assume.
+        default: ""
+        required: false
+        type: string
+
+      # Third profile to create
+      aws-profile3:
+        description: Name of the AWS profile to configure.
+        default: ${{ vars.TERRAGRUNT_AWS_PROFILE3 || vars.AWS_PROFILE3 }}
+        required: false
+        type: string
+      aws-region3:
+        description: The AWS region to use.
+        default: ${{ vars.TERRAGRUNT_AWS_REGION3 || vars.AWS_REGION3 }}
+        required: false
+        type: string
+      aws-role-to-assume3:
+        description: The AWS role to assume.
+        default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_ASSUME3 || vars.AWS_ROLE_TO_ASSUME3 }}
+        required: false
+        type: string
+      aws-role-to-chain3:
+        description: The second AWS role to assume.
+        default: ${{ vars.TERRAGRUNT_AWS_ROLE_TO_CHAIN3 || vars.AWS_ROLE_TO_CHAIN3 }}
+        required: false
+        type: string
+      aws-role-to-chain-external-id3:
+        description: The external ID of the second AWS role to assume.
+        default: ""
+        required: false
+        type: string
+
       working-directory:
         description: The directory in which to run terragrunt from.
         default: ./
@@ -66,19 +127,59 @@ jobs:
         with:
           ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials (Default)
         uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
         with:
+          aws-profile: ${{ inputs.aws-profile }}
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
 
-      - name: Configure Chained AWS Credentials
+      - name: Configure Chained AWS Credentials (Default)
         if: inputs.aws-role-to-chain != ''
         uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
         with:
+          aws-profile: ${{ inputs.aws-profile }}
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-chain }}
           role-external-id: ${{ inputs.aws-role-to-chain-external-id }}
+          role-chaining: true
+          role-skip-session-tagging: true
+
+      - name: Configure AWS Credentials (${{ inputs.aws-profile2 }})
+        if: inputs.aws-profile2 != ''
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-profile: ${{ inputs.aws-profile2 }}
+          aws-region: ${{ inputs.aws-region2 }}
+          role-to-assume: ${{ inputs.aws-role-to-assume2 }}
+
+      - name: Configure Chained AWS Credentials (${{ inputs.aws-profile2 }})
+        if: inputs.aws-profile2 != '' && inputs.aws-role-to-chain2 != ''
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-profile: ${{ inputs.aws-profile2 }}
+          aws-region: ${{ inputs.aws-region2 }}
+          role-to-assume: ${{ inputs.aws-role-to-chain2 }}
+          role-external-id: ${{ inputs.aws-role-to-chain-external-id2 }}
+          role-chaining: true
+          role-skip-session-tagging: true
+
+      - name: Configure AWS Credentials (${{ inputs.aws-profile3 }})
+        if: inputs.aws-profile3 != ''
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-profile: ${{ inputs.aws-profile3 }}
+          aws-region: ${{ inputs.aws-region3 }}
+          role-to-assume: ${{ inputs.aws-role-to-assume3 }}
+
+      - name: Configure Chained AWS Credentials (${{ inputs.aws-profile3 }})
+        if: inputs.aws-profile3 != '' && inputs.aws-role-to-chain3 != ''
+        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-profile: ${{ inputs.aws-profile3 }}
+          aws-region: ${{ inputs.aws-region3 }}
+          role-to-assume: ${{ inputs.aws-role-to-chain3 }}
+          role-external-id: ${{ inputs.aws-role-to-chain-external-id3 }}
           role-chaining: true
           role-skip-session-tagging: true
 
