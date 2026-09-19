@@ -128,7 +128,7 @@ jobs:
           ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
       - name: Configure AWS Credentials (Default)
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile }}
           aws-region: ${{ inputs.aws-region }}
@@ -136,7 +136,7 @@ jobs:
 
       - name: Configure Chained AWS Credentials (Default)
         if: inputs.aws-role-to-chain != ''
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile }}
           aws-region: ${{ inputs.aws-region }}
@@ -147,7 +147,7 @@ jobs:
 
       - name: Configure AWS Credentials (${{ inputs.aws-profile2 }})
         if: inputs.aws-profile2 != ''
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile2 }}
           aws-region: ${{ inputs.aws-region2 }}
@@ -155,7 +155,7 @@ jobs:
 
       - name: Configure Chained AWS Credentials (${{ inputs.aws-profile2 }})
         if: inputs.aws-profile2 != '' && inputs.aws-role-to-chain2 != ''
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile2 }}
           aws-region: ${{ inputs.aws-region2 }}
@@ -166,7 +166,7 @@ jobs:
 
       - name: Configure AWS Credentials (${{ inputs.aws-profile3 }})
         if: inputs.aws-profile3 != ''
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile3 }}
           aws-region: ${{ inputs.aws-region3 }}
@@ -174,7 +174,7 @@ jobs:
 
       - name: Configure Chained AWS Credentials (${{ inputs.aws-profile3 }})
         if: inputs.aws-profile3 != '' && inputs.aws-role-to-chain3 != ''
-        uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # ratchet:aws-actions/configure-aws-credentials@v6.2.4
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile3 }}
           aws-region: ${{ inputs.aws-region3 }}
