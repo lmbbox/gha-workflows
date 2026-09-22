@@ -7,7 +7,7 @@ on:
       # Default profile and credentials to load
       aws-profile:
         description: Name of the AWS profile to configure.
-        default: ${{ vars.TERRAGRUNT_AWS_PROFILE || vars.AWS_PROFILE }}
+        default: ${{ vars.TERRAGRUNT_AWS_PROFILE || vars.AWS_PROFILE || 'default' }}
         required: false
         type: string
       aws-region:
@@ -183,9 +183,25 @@ jobs:
           role-chaining: true
           role-skip-session-tagging: true
 
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Login to Amazon ECR (Default)
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        env:
+          AWS_PROFILE: ${{ inputs.aws-profile }}
+          AWS_REGION: ${{ inputs.aws-region }}
+
+      - name: Login to Amazon ECR (${{ inputs.aws-profile2 }})
+        if: inputs.aws-profile2 != ''
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        env:
+          AWS_PROFILE: ${{ inputs.aws-profile2 }}
+          AWS_REGION: ${{ inputs.aws-region2 }}
+
+      - name: Login to Amazon ECR (${{ inputs.aws-profile3 }})
+        if: inputs.aws-profile3 != ''
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        env:
+          AWS_PROFILE: ${{ inputs.aws-profile3 }}
+          AWS_REGION: ${{ inputs.aws-region3 }}
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7.0.1
