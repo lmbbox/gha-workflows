@@ -127,14 +127,14 @@ jobs:
         with:
           ssh-private-key: ${{ env.SSH_DEPLOY_KEYS }}
 
-      - name: Configure AWS Credentials (Default)
+      - name: Configure AWS Credentials (${{ inputs.aws-profile }})
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-profile: ${{ inputs.aws-profile }}
           aws-region: ${{ inputs.aws-region }}
           role-to-assume: ${{ inputs.aws-role-to-assume }}
 
-      - name: Configure Chained AWS Credentials (Default)
+      - name: Configure Chained AWS Credentials (${{ inputs.aws-profile }})
         if: inputs.aws-role-to-chain != ''
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # ratchet:aws-actions/configure-aws-credentials@v6.3.0
         with:
@@ -183,7 +183,7 @@ jobs:
           role-chaining: true
           role-skip-session-tagging: true
 
-      - name: Login to Amazon ECR (Default)
+      - name: Login to Amazon ECR (${{ inputs.aws-profile }})
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
         env:
           AWS_PROFILE: ${{ inputs.aws-profile }}
