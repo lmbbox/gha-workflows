@@ -184,21 +184,21 @@ jobs:
           role-skip-session-tagging: true
 
       - name: Login to Amazon ECR (${{ inputs.aws-profile }})
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # ratchet:aws-actions/amazon-ecr-login@v2.2.0
         env:
           AWS_PROFILE: ${{ inputs.aws-profile }}
           AWS_REGION: ${{ inputs.aws-region }}
 
       - name: Login to Amazon ECR (${{ inputs.aws-profile2 }})
         if: inputs.aws-profile2 != ''
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # ratchet:aws-actions/amazon-ecr-login@v2.2.0
         env:
           AWS_PROFILE: ${{ inputs.aws-profile2 }}
           AWS_REGION: ${{ inputs.aws-region2 }}
 
       - name: Login to Amazon ECR (${{ inputs.aws-profile3 }})
         if: inputs.aws-profile3 != ''
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # ratchet:aws-actions/amazon-ecr-login@v2.1.7
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # ratchet:aws-actions/amazon-ecr-login@v2.2.0
         env:
           AWS_PROFILE: ${{ inputs.aws-profile3 }}
           AWS_REGION: ${{ inputs.aws-region3 }}
